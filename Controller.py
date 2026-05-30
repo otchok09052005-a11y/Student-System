@@ -1,7 +1,7 @@
 class StudentController:
     def __init__(self):
-        self.model = StudentModel()
-        self.view = StudentView()
+        self.model = ()
+        self.view = View()
 
     def run(self):
         while True:
@@ -29,7 +29,7 @@ class StudentController:
         name = self.view.input_name()
         age = self.view.input_age()
 
-        student = Student(sid, name, age)
+        student= (sid, name, age)
         self.model.add_student(student)
 
         self.view.show_message("Student added successfully!")
@@ -74,8 +74,3 @@ class StudentController:
             self.view.show_message("Student deleted successfully!")
         else:
             self.view.show_message("Student not found.")
-
-
-if __name__ == "__main__":
-    app = StudentController()
-    app.run()
