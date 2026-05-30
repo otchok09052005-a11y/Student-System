@@ -49,3 +49,5 @@ class StudentModel:
     def delete_student(self, student):
     self.students.remove(student)
     self.save_students()
+
+    

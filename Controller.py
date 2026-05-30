@@ -55,19 +55,16 @@ class StudentController:
     def update_student(self):
         sid = self.view.input_id()
         student = self.model.find_student(sid)
+if student:
+    new_name = input(f"New Name ({student.name}): ")
+    new_age = input(f"New Age ({student.age}): ")
 
-        if student:
-            new_name = input(f"New Name ({student.name}): ")
-            new_age = input(f"New Age ({student.age}): ")
-
-            if new_name:
-                student.name = new_name
-            if new_age:
-                student.age = new_age
-
-            self.view.show_message("Student updated successfully!")
-        else:
-            self.view.show_message("Student not found.")
+    if new_name:
+        student.name = new_name
+    if new_age:
+        student.age = new_age
+    self.model.save_students()
+    self.view.show_message("Student updated successfully!")
 
     def delete_student(self):
         sid = self.view.input_id()
