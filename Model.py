@@ -1,3 +1,14 @@
+import json
+FILE_NAME = "students.json"
+
+def load_students(self):
+    try:
+        with open(self.FILE_NAME, "r") as file:
+            data = json.load(file)
+            self.students = [Student(s["id"], s["name"], s["age"]) for s in data]
+    except FileNotFoundError:
+        self.students = []
+
 class Student:
     def __init__(self, student_id, name, age):
         self.id = student_id
