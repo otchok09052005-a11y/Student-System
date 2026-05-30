@@ -1,4 +1,4 @@
-from Model import StudentModel
+from Model import StudentModel, Student
 from View import StudentView
 
 class StudentController:
