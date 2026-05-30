@@ -9,6 +9,10 @@ def load_students(self):
     except FileNotFoundError:
         self.students = []
 
+def __init__(self):
+    self.students = []
+    self.load_students()
+
         def save_students(self):
     with open(self.FILE_NAME, "w") as file:
         json.dump(
@@ -16,7 +20,7 @@ def load_students(self):
             file,
             indent=4
         )
-        
+
 
 class Student:
     def __init__(self, student_id, name, age):
@@ -30,7 +34,8 @@ class StudentModel:
         self.students = []
 
     def add_student(self, student):
-        self.students.append(student)
+    self.students.append(student)
+    self.save_students()
 
     def get_all_students(self):
         return self.students
@@ -42,4 +47,5 @@ class StudentModel:
         return None
 
     def delete_student(self, student):
-        self.students.remove(student)
+    self.students.remove(student)
+    self.save_students()
