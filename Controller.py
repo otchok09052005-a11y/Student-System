@@ -1,7 +1,11 @@
+from Model import StudentModel
+from View import StudentView
+
+
 class StudentController:
     def __init__(self):
-        self.model = ()
-        self.view = View()
+        self.model = StudentModel()
+        self.view = StudentView()
 
     def run(self):
         while True:
@@ -74,3 +78,7 @@ class StudentController:
             self.view.show_message("Student deleted successfully!")
         else:
             self.view.show_message("Student not found.")
+
+if __name__ == "__main__":
+    app =  StudentController()
+    app.run()
