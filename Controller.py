@@ -1,85 +1,85 @@
-from Model import StudentModel, Student
-from View import StudentView
+import Model
 
 class StudentController:
-    def __init__(self):
-        self.model = StudentModel()
-        self.view = StudentView()
+    def __init__(self, model, view):
+        self.model = model
+        self.view = view
 
-    def run(self):
-        while True:
-            self.view.display_menu()
-            choice = input("Enter choice (1-6): ")
+        self.view.on_add_click = self.add_student
+        self.view.on_delete_click = self.delete_student
+        self.view.on_update_click = self.update_student
+        self.view.on_stats_click = self.display_stats
+        self.view.on_select_record = self.populate_fields_from_selection
 
-            if choice == "1":
-                self.add_student()
-            elif choice == "2":
-                self.view_students()
-            elif choice == "3":
-                self.search_student()
-            elif choice == "4":
-                self.update_student()
-            elif choice == "5":
-                self.delete_student()
-            elif choice == "6":
-                self.view.show_message("Exiting program. Goodbye!")
-                break
-            else:
-                self.view.show_message("Invalid choice!")
+        self.view.refresh_directory(self.model.get_all_students())
 
     def add_student(self):
-        sid = self.view.input_id()
-        name = self.view.input_name()
-        age = self.view.input_age()
+        sid, name, age_str = self.view.get_inputs()
 
-        student = Student(sid, name, age)
-        self.model.add_student(student)
+        if not sid.isdigit() or not name or not age_str.isdigit():
+            self.view.show_message("Format Error", "All fields are required. ID and Age must be digits.", is_error=True)
+            return
 
-        self.view.show_message("Student added successfully!")
+        if self.model.find_student(sid):
+            self.view.show_message("Duplicate Record", f"Student with ID {sid} already exists.", is_error=True)
+            return
 
-    def view_students(self):
-        self.view.show_students(self.model.get_all_students())
-
-    def search_student(self):
-        sid = self.view.input_id()
-        student = self.model.find_student(sid)
-
-        if student:
-            self.view.show_message(
-                f"Found: ID: {student.id}, Name: {student.name}, Age: {student.age}"
-            )
-        else:
-            self.view.show_message("Student not found.")
+        new_student = Model.Student(sid, name, int(age_str))
+        self.model.add_student(new_student)
+        
+        self.view.refresh_directory(self.model.get_all_students())
+        self.view.clear_inputs()
+        self.view.show_message("Success", "Student registered successfully.")
 
     def update_student(self):
-        sid = self.view.input_id()
+        sid, name, age_str = self.view.get_inputs()
         student = self.model.find_student(sid)
 
-        if student:
-            new_name = input(f"New Name ({student.name}): ")
-            new_age = input(f"New Age ({student.age}): ")
+        if not student:
+            self.view.show_message("Selection Error", "Please select a valid record from the table directory.", is_error=True)
+            return
 
-            if new_name:
-                student.name = new_name
-            if new_age:
-                student.age = new_age
+        if name:
+            student.name = name
+        if age_str and age_str.isdigit():
+            student.age = int(age_str)
 
-            self.model.save_students()
-            self.view.show_message("Student updated successfully!")
-        else:
-            self.view.show_message("Student not found.")
+        self.model.save_students()
+        self.view.refresh_directory(self.model.get_all_students())
+        self.view.clear_inputs()
+        self.view.show_message("Success", "Student record configuration updated.")
 
     def delete_student(self):
-        sid = self.view.input_id()
-        student = self.model.find_student(sid)
+        selected_item = self.view.tree.selection()
+        if not selected_item:
+            self.view.show_message("Selection Error", "Choose a student record to erase.", is_error=True)
+            return
+
+        values = self.view.tree.item(selected_item, "values")
+        student = self.model.find_student(values[0])
 
         if student:
             self.model.delete_student(student)
-            self.view.show_message("Student deleted successfully!")
-        else:
-            self.view.show_message("Student not found.")
+            self.view.refresh_directory(self.model.get_all_students())
+            self.view.clear_inputs()
+            self.view.show_message("Success", "Student records cleared safely.")
 
+    def populate_fields_from_selection(self):
+        selected_item = self.view.tree.selection()
+        if selected_item:
+            values = self.view.tree.item(selected_item, "values")
+            self.view.set_inputs(values[0], values[1], values[2])
 
-if __name__ == "__main__":
-    app = StudentController()
-    app.run()
+    def display_stats(self):
+        stats = self.model.get_statistics()
+        if not stats:
+            self.view.show_message("Analytics Panel", "Insufficient student volume to compile dashboard metrics.", is_error=True)
+            return
+            
+        summary = (
+            f"Total Enrolled: {stats['total']}\n"
+            f"Average Age: {stats['average_age']}\n"
+            f"Oldest Record: {stats['max_age']}\n"
+            f"Youngest Record: {stats['min_age']}"
+        )
+        self.view.show_message("System Statistics Dashboard", summary)
