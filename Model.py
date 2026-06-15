@@ -63,6 +63,7 @@ class StudentModel:
         if not self.students:
             return None
         ages = [s.age for s in self.students]
+        
         return {
             "total": len(self.students),
             "average_age": round(sum(ages) / len(ages), 1),
