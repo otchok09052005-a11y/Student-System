@@ -1,4 +1,4 @@
-from Model import StudentModel, Student
+import Model
 
 class StudentController:
     def __init__(self, model, view):
@@ -24,7 +24,7 @@ class StudentController:
             self.view.show_message("Duplicate Record", f"Student with ID {sid} already exists.", is_error=True)
             return
 
-        new_student = Student(sid, name, int(age_str))
+        new_student = Model.Student(sid, name, int(age_str))
         self.model.add_student(new_student)
         
         self.view.refresh_directory(self.model.get_all_students())

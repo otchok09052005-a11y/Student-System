@@ -2,11 +2,16 @@
     {
         "id": "12312",
         "name": "Jayr V. Sora",
-        "age": "21"
+        "age": 21
     },
     {
         "id": "123123",
         "name": "Blue",
-        "age": "21"
+        "age": 21
+    },
+    {
+        "id": "55555",
+        "name": "Girlie C.Vallega",
+        "age": 40
     }
 ]
