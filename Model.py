@@ -59,7 +59,7 @@ class StudentModel:
         except IOError:
             print("Error: Could not save data.")
 
-    def get_statistics(self):
+    def get_statistic(self):
         if not self.students:
             return None
         ages = [s.age for s in self.students]
